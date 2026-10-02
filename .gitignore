@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+logs/
+.pytest_cache/
+eval/results/*.json
+!eval/results/.gitkeep
+.playwright-mcp/
+.gradio/
