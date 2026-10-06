@@ -1,0 +1,41 @@
+{
+  "_comment": "Offline fallback for check_dependencies. Ranges verified against osv.dev / GitHub advisory pages on 2026-10-30. Not exhaustive: live OSV is used whenever reachable.",
+  "advisories": [
+    {
+      "id": "GHSA-rv95-896h-c2vc",
+      "aliases": ["CVE-2024-29041"],
+      "package": "express",
+      "summary": "Open redirect in malformed URLs",
+      "severity": "medium",
+      "cvss": 6.1,
+      "ranges": [{"introduced": "0", "fixed": "4.19.2"}]
+    },
+    {
+      "id": "GHSA-p6mc-m468-83gw",
+      "aliases": ["CVE-2020-8203"],
+      "package": "lodash",
+      "summary": "Prototype pollution via pick/set/setWith/update/updateWith/zipObjectDeep",
+      "severity": "high",
+      "cvss": 7.4,
+      "ranges": [{"introduced": "3.7.0", "fixed": "4.17.19"}]
+    },
+    {
+      "id": "GHSA-8cf7-32gw-wr33",
+      "aliases": ["CVE-2022-23539"],
+      "package": "jsonwebtoken",
+      "summary": "Insecure (legacy) key types accepted for signature verification",
+      "severity": "high",
+      "cvss": 8.1,
+      "ranges": [{"introduced": "0", "fixed": "9.0.0"}]
+    },
+    {
+      "id": "GHSA-xvch-5gv4-984h",
+      "aliases": ["CVE-2021-44906"],
+      "package": "minimist",
+      "summary": "Prototype pollution in setKey()",
+      "severity": "critical",
+      "cvss": 9.8,
+      "ranges": [{"introduced": "0", "fixed": "0.2.4"}, {"introduced": "1.0.0", "fixed": "1.2.6"}]
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+# Custom Semgrep rules for the six MVP vulnerability classes.
+# metadata.vuln_class must match scra.schema.VulnClass.
+rules:
+  # ---------------------------------------------------------------- XSS
+  - id: scra.xss.express-send-user-input
+    mode: taint
+    languages: [javascript]
+    severity: ERROR
+    message: User-controlled request data is written into an HTTP response without HTML encoding.
+    metadata: {vuln_class: xss, cwe: CWE-79, confidence: HIGH}
+    pattern-sources:
+      - pattern: $REQ.query
+      - pattern: $REQ.body
+      - pattern: $REQ.params
+      - pattern: $REQ.cookies
+      - pattern: $REQ.headers
+    pattern-sanitizers:
+      - pattern: escapeHtml(...)
+      - pattern: $X.escape(...)
+      - pattern: encodeURIComponent(...)
+      - pattern: DOMPurify.sanitize(...)
+    pattern-sinks:
+      - pattern: $RES.send(...)
+      - pattern: $RES.write(...)
+      - pattern: $RES.end(...)
+
+  - id: scra.xss.dom-innerhtml
+    languages: [javascript]
+    severity: ERROR
+    message: Dynamic content is assigned to innerHTML/outerHTML, which parses it as HTML.
+    metadata: {vuln_class: xss, cwe: CWE-79, confidence: MEDIUM}
+    patterns:
+      - pattern-either:
+          - pattern: $EL.innerHTML = $V
+          - pattern: $EL.innerHTML += $V
+          - pattern: $EL.outerHTML = $V
+          - pattern: document.write($V)
+          - pattern: $EL.insertAdjacentHTML($POS, $V)
+      - pattern-not: $EL.innerHTML = "..."
+      - pattern-not: $EL.outerHTML = "..."
+      - pattern-not: document.write("...")
+      - pattern-not: $EL.innerHTML = DOMPurify.sanitize(...)
+
+  # ---------------------------------------------------------- Injection
+  - id: scra.injection.sql-string-concat
+    languages: [javascript]
+    severity: ERROR
+    message: SQL statement built by string concatenation; use parameterized queries.
+    metadata: {vuln_class: injection, cwe: CWE-89, confidence: HIGH}
+    patterns:
+      - pattern-either:
+          - pattern: '"$SQL" + $X'
+          - pattern: "`$SQL${$X}...`"
+      - metavariable-regex:
+          metavariable: $SQL
+          regex: (?i)^\s*(select|insert|update|delete|replace)\b
+
+  - id: scra.injection.os-command
+    languages: [javascript]
+    severity: ERROR
+    message: A shell command is built from non-constant input; use execFile with an argument array and validate input.
+    metadata: {vuln_class: injection, cwe: CWE-78, confidence: HIGH}
+    patterns:
+      - pattern-either:
+          - pattern: exec($CMD, ...)
+          - pattern: execSync($CMD, ...)
+          - patterns:
+              - pattern-either:
+                  - pattern: $CP.exec($CMD, ...)
+                  - pattern: $CP.execSync($CMD, ...)
+              - metavariable-regex:
+                  metavariable: $CP
+                  regex: ^(child_process|childProcess|cp|proc)$
+          - pattern: 'spawn($CMD, $ARGS, {..., shell: true, ...})'
+      - metavariable-pattern:
+          metavariable: $CMD
+          patterns:
+            - pattern-not: '"..."'
+
+  - id: scra.injection.eval
+    languages: [javascript]
+    severity: ERROR
+    message: Dynamic code evaluation of non-constant input.
+    metadata: {vuln_class: injection, cwe: CWE-95, confidence: HIGH}
+    patterns:
+      - pattern-either:
+          - pattern: eval($X)
+          - pattern: new Function(..., $X)
+          - pattern: vm.runInNewContext($X, ...)
+          - pattern: vm.runInThisContext($X, ...)
+      - pattern-not: eval("...")
+      - pattern-not: new Function(..., "...")
+
+  # ------------------------------------------------------------ Cookies
+  - id: scra.cookie.missing-security-flags
+    languages: [javascript]
+    severity: WARNING
+    message: Cookie set without httpOnly and secure flags.
+    metadata: {vuln_class: insecure_cookie, cwe: CWE-614, confidence: MEDIUM}
+    pattern-either:
+      - pattern: $RES.cookie($NAME, $VAL)
+      - patterns:
+          - pattern: $RES.cookie($NAME, $VAL, {...})
+          - pattern-not: '$RES.cookie($NAME, $VAL, {..., httpOnly: true, ..., secure: true, ...})'
+          - pattern-not: '$RES.cookie($NAME, $VAL, {..., secure: true, ..., httpOnly: true, ...})'
+
+  - id: scra.cookie.session-insecure
+    languages: [javascript]
+    severity: WARNING
+    message: Session middleware configured with insecure cookie options.
+    metadata: {vuln_class: insecure_cookie, cwe: CWE-1004, confidence: MEDIUM}
+    pattern-either:
+      - pattern: 'session({..., cookie: {..., httpOnly: false, ...}, ...})'
+      - pattern: 'session({..., cookie: {..., secure: false, ...}, ...})'
+
+  # --------------------------------------------------- Input validation
+  - id: scra.validation.unvalidated-body-to-model
+    languages: [javascript]
+    severity: WARNING
+    message: The raw request body is passed directly to a data-layer call without schema validation.
+    metadata: {vuln_class: missing_input_validation, cwe: CWE-20, confidence: MEDIUM}
+    pattern-either:
+      - pattern: $M.create($REQ.body)
+      - pattern: $M.insertOne($REQ.body)
+      - pattern: $M.insertMany($REQ.body)
+      - pattern: $M.update($Q, $REQ.body, ...)
+      - pattern: $M.updateOne($Q, $REQ.body, ...)
+      - pattern: $M.findByIdAndUpdate($ID, $REQ.body, ...)
+      - pattern: new $M($REQ.body)
+      - pattern: Object.assign($T, $REQ.body)
+
+  # ----------------------------------------------------------- Secrets
+  - id: scra.secret.named-credential
+    languages: [javascript]
+    severity: ERROR
+    message: A credential-like value is hardcoded in source.
+    metadata: {vuln_class: hardcoded_secret, cwe: CWE-798, confidence: MEDIUM}
+    patterns:
+      - pattern-either:
+          - pattern: const $K = "$V"
+          - pattern: let $K = "$V"
+          - pattern: var $K = "$V"
+          - pattern: '{..., $K: "$V", ...}'
+          - pattern: $O.$K = "$V"
+      - metavariable-regex:
+          metavariable: $K
+          regex: (?i).*(secret|passw(or)?d|pwd|token|api_?key|access_?key|private_?key|credential).*
+      - metavariable-regex:
+          metavariable: $V
+          regex: ^[^\s]{8,}$
+      - focus-metavariable: $V
+
+  - id: scra.secret.known-token-format
+    languages: [javascript]
+    severity: ERROR
+    message: A string matching a known cloud/API credential format is hardcoded.
+    metadata: {vuln_class: hardcoded_secret, cwe: CWE-798, confidence: HIGH}
+    pattern-either:
+      - pattern-regex: (AKIA|ASIA)[0-9A-Z]{16}
+      - pattern-regex: gh[pousr]_[A-Za-z0-9]{36}
+      - pattern-regex: xox[baprs]-[A-Za-z0-9-]{10,}
+      - pattern-regex: sk_live_[0-9a-zA-Z]{24,}
+      - pattern-regex: -----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----

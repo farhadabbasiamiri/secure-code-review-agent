@@ -1,0 +1,40 @@
+{
+  "_comment": "Ground truth. line = 1-based line in the reviewed file (for diffs: line in the new file). 'acceptable' lists classes that are defensible extra findings and are not counted as false positives.",
+  "classes": [
+    "xss",
+    "injection",
+    "insecure_cookie",
+    "missing_input_validation",
+    "hardcoded_secret",
+    "vulnerable_dependency"
+  ],
+  "line_tolerance": 2,
+  "samples": {
+    "xss_reflected_vuln.js": {"findings": [{"class": "xss", "line": 6}], "acceptable": ["missing_input_validation"]},
+    "xss_reflected_fixed.js": {"findings": [], "acceptable": []},
+    "xss_dom_vuln.js": {"findings": [{"class": "xss", "line": 4}], "acceptable": []},
+    "xss_dom_fixed.js": {"findings": [], "acceptable": []},
+    "sqli_vuln.js": {"findings": [{"class": "injection", "line": 7}], "acceptable": ["missing_input_validation"]},
+    "sqli_fixed.js": {"findings": [], "acceptable": []},
+    "cmdi_vuln.js": {"findings": [{"class": "injection", "line": 6}], "acceptable": ["missing_input_validation"]},
+    "cmdi_fixed.js": {"findings": [], "acceptable": []},
+    "eval_vuln.js": {"findings": [{"class": "injection", "line": 6}], "acceptable": ["missing_input_validation"]},
+    "cookie_vuln.js": {"findings": [{"class": "insecure_cookie", "line": 6}, {"class": "insecure_cookie", "line": 7}], "acceptable": []},
+    "cookie_fixed.js": {"findings": [], "acceptable": []},
+    "validation_vuln.js": {"findings": [{"class": "missing_input_validation", "line": 7}], "acceptable": []},
+    "validation_fixed.js": {"findings": [], "acceptable": []},
+    "secret_vuln.js": {"findings": [{"class": "hardcoded_secret", "line": 4}, {"class": "hardcoded_secret", "line": 6}, {"class": "hardcoded_secret", "line": 7}], "acceptable": []},
+    "secret_fixed.js": {"findings": [], "acceptable": []},
+    "mixed_vuln.js": {"findings": [{"class": "hardcoded_secret", "line": 6}, {"class": "xss", "line": 9}, {"class": "injection", "line": 13}, {"class": "insecure_cookie", "line": 14}], "acceptable": ["missing_input_validation"]},
+    "clean_utils.js": {"findings": [], "acceptable": []},
+    "clean_router.js": {"findings": [], "acceptable": []},
+    "xss_added.diff": {"findings": [{"class": "xss", "line": 6}], "acceptable": []},
+    "package_vuln.json": {"findings": [
+      {"class": "vulnerable_dependency", "package": "express"},
+      {"class": "vulnerable_dependency", "package": "lodash"},
+      {"class": "vulnerable_dependency", "package": "jsonwebtoken"},
+      {"class": "vulnerable_dependency", "package": "minimist"}
+    ], "acceptable": []},
+    "package_safe.json": {"findings": [], "acceptable": []}
+  }
+}

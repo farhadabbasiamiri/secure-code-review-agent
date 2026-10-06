@@ -1,0 +1,194 @@
+{
+  "_comment": "Curated knowledge base for retrieve_guidance. Entries are short paraphrased summaries written for this project, each linking to its authoritative source. Not a copy of OWASP/MITRE text.",
+  "entries": [
+    {
+      "id": "CWE-79",
+      "title": "Improper Neutralization of Input During Web Page Generation (Cross-site Scripting)",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/79.html",
+      "vuln_class": "xss",
+      "text": "XSS happens when data an attacker can influence is placed into an HTML page without being encoded for the context it lands in. The browser then treats that data as markup or script and runs it with the site's privileges, which can expose session cookies, perform actions as the user, or alter the page. Reflected XSS echoes request parameters straight into a response; DOM-based XSS happens entirely in client-side JavaScript when values such as location.hash are written to innerHTML or document.write.",
+      "keywords": "res.send res.write template response html output reflected user input"
+    },
+    {
+      "id": "OWASP-CS-XSS",
+      "title": "OWASP Cross Site Scripting Prevention Cheat Sheet",
+      "source": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+      "vuln_class": "xss",
+      "text": "Prevent XSS by encoding output for the exact context it is written into: HTML body, attribute, JavaScript, CSS, or URL. Prefer frameworks and templating engines that encode automatically, and avoid escape hatches that bypass it. In the browser, use safe sinks like textContent or setAttribute instead of innerHTML, outerHTML, insertAdjacentHTML or document.write. When rich HTML must be accepted, sanitize it with a maintained library such as DOMPurify. A Content Security Policy is useful defence in depth but not a substitute for encoding.",
+      "keywords": "escapeHtml escape-html textContent innerHTML DOMPurify res.send encoding"
+    },
+    {
+      "id": "OWASP-CS-DOMXSS",
+      "title": "OWASP DOM based XSS Prevention Cheat Sheet",
+      "source": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html",
+      "vuln_class": "xss",
+      "text": "DOM XSS sources include location, document.URL, document.referrer, postMessage data and responses fetched from APIs. Dangerous sinks include innerHTML, outerHTML, document.write, eval and setting href to a javascript: URL. Building elements with createElement and assigning textContent keeps untrusted data as text. Data returned from your own API is still untrusted if users can store it, such as comments.",
+      "keywords": "innerHTML outerHTML insertAdjacentHTML document.write location.hash fetch"
+    },
+    {
+      "id": "CWE-89",
+      "title": "Improper Neutralization of Special Elements used in an SQL Command (SQL Injection)",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/89.html",
+      "vuln_class": "injection",
+      "text": "SQL injection occurs when an application builds a SQL statement by concatenating or interpolating external input, letting that input change the structure of the query rather than just supplying a value. Consequences include reading or modifying data the user should not access, bypassing authentication and, on some databases, running commands on the server.",
+      "keywords": "query string concatenation SELECT INSERT UPDATE WHERE"
+    },
+    {
+      "id": "OWASP-CS-SQLI",
+      "title": "OWASP SQL Injection Prevention Cheat Sheet",
+      "source": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+      "vuln_class": "injection",
+      "text": "The primary defence is parameterized queries (prepared statements), where the query text is fixed and user values are passed separately as bind parameters, for example db.query('SELECT * FROM t WHERE id = ?', [id]) in mysql2 or $1 placeholders in pg. Query builders and ORMs are safe when used with their parameter APIs but not with raw string fragments. Add allow-list validation for values that cannot be parameterized, such as column names or sort direction, and run the database account with least privilege.",
+      "keywords": "db.query mysql2 pg prepared statement placeholder bind parameter knex sequelize"
+    },
+    {
+      "id": "CWE-78",
+      "title": "Improper Neutralization of Special Elements used in an OS Command (OS Command Injection)",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/78.html",
+      "vuln_class": "injection",
+      "text": "OS command injection happens when external input becomes part of a command string that is interpreted by a shell. Shell metacharacters such as ; | & and $( ) let the input start additional commands with the privileges of the application.",
+      "keywords": "shell exec execSync command string child_process"
+    },
+    {
+      "id": "OWASP-CS-CMDI",
+      "title": "OWASP OS Command Injection Defense Cheat Sheet",
+      "source": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html",
+      "vuln_class": "injection",
+      "text": "First choice: avoid calling OS commands and use a library or built-in API instead. If a command is unavoidable, do not go through a shell: in Node.js use child_process.execFile or spawn with an argument array and shell disabled, never exec with a concatenated string. Validate every argument against a strict allow-list (for example net.isIP for hostnames given to ping) and reject anything else.",
+      "keywords": "child_process exec execFile spawn shell argument array allow-list"
+    },
+    {
+      "id": "CWE-95",
+      "title": "Improper Neutralization of Directives in Dynamically Evaluated Code (Eval Injection)",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/95.html",
+      "vuln_class": "injection",
+      "text": "Passing external input to eval, new Function, or vm.runInContext lets that input run as code inside the application process. In Node.js this means full access to the file system, environment variables and network. There is almost always a safer alternative: JSON.parse for data, a lookup table for dispatch, or a dedicated expression parser for calculators.",
+      "keywords": "eval new Function vm runInNewContext setTimeout string code execution"
+    },
+    {
+      "id": "CWE-614",
+      "title": "Sensitive Cookie in HTTPS Session Without 'Secure' Attribute",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/614.html",
+      "vuln_class": "insecure_cookie",
+      "text": "A cookie without the Secure attribute can be sent over plain HTTP, where a network attacker can read it. Session and authentication cookies should always be marked Secure so browsers only send them over HTTPS.",
+      "keywords": "res.cookie secure https cookie flag"
+    },
+    {
+      "id": "CWE-1004",
+      "title": "Sensitive Cookie Without 'HttpOnly' Flag",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/1004.html",
+      "vuln_class": "insecure_cookie",
+      "text": "Without HttpOnly, client-side JavaScript can read a cookie through document.cookie. If the site has any XSS bug, an attacker can steal session tokens directly. HttpOnly limits the impact of XSS on session cookies.",
+      "keywords": "res.cookie httpOnly document.cookie"
+    },
+    {
+      "id": "OWASP-CS-SESSION",
+      "title": "OWASP Session Management Cheat Sheet",
+      "source": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html",
+      "vuln_class": "insecure_cookie",
+      "text": "Session cookies should set Secure, HttpOnly and an appropriate SameSite value (Strict or Lax) to limit cross-site request forgery. Keep the cookie scope narrow with Path and Domain, set sensible expiry, and regenerate the session identifier after login. In Express, pass { httpOnly: true, secure: true, sameSite: 'strict' } to res.cookie, or configure the cookie block of express-session the same way.",
+      "keywords": "express-session res.cookie httpOnly secure sameSite cookie options"
+    },
+    {
+      "id": "CWE-20",
+      "title": "Improper Input Validation",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/20.html",
+      "vuln_class": "missing_input_validation",
+      "text": "Improper input validation means the application does not check that input has the expected type, length, format and range before using it. It is the root cause behind many other weaknesses, including injection and mass assignment, and also causes crashes and data corruption.",
+      "keywords": "req.body req.query req.params type length format check"
+    },
+    {
+      "id": "CWE-915",
+      "title": "Improperly Controlled Modification of Dynamically-Determined Object Attributes (Mass Assignment)",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/915.html",
+      "vuln_class": "missing_input_validation",
+      "text": "Passing a whole request body to a model create or update call lets a client set fields it should never control, such as isAdmin, role, balance or ownerId. Copy only the expected fields, or validate the body against an explicit schema that strips unknown keys.",
+      "keywords": "req.body create update insertOne findByIdAndUpdate Object.assign mass assignment model"
+    },
+    {
+      "id": "OWASP-CS-INPUT",
+      "title": "OWASP Input Validation Cheat Sheet",
+      "source": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html",
+      "vuln_class": "missing_input_validation",
+      "text": "Validate input on the server as early as possible, using allow-lists that describe what is valid rather than deny-lists of known bad values. Check type, length, format and range. In Node.js, schema libraries such as zod, joi or express-validator make this declarative; reject invalid requests with HTTP 400 and pass only the parsed, validated object to the data layer. Validation complements, but does not replace, output encoding and parameterized queries.",
+      "keywords": "zod joi express-validator schema safeParse 400 req.body"
+    },
+    {
+      "id": "CWE-798",
+      "title": "Use of Hard-coded Credentials",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/798.html",
+      "vuln_class": "hardcoded_secret",
+      "text": "Credentials written into source code end up in version control history, build artifacts and every copy of the repository. Anyone with read access can use them, and rotating them requires a code change and redeploy. Leaked cloud keys and tokens are actively harvested from public repositories within minutes.",
+      "keywords": "apiKey accessKeyId secretAccessKey password token constant string literal"
+    },
+    {
+      "id": "OWASP-CS-SECRETS",
+      "title": "OWASP Secrets Management Cheat Sheet",
+      "source": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
+      "vuln_class": "hardcoded_secret",
+      "text": "Load secrets at runtime from environment variables or a secrets manager rather than source code, and fail fast at startup if a required secret is missing. For cloud SDKs, prefer the provider's default credential chain or workload identity over access keys. If a secret was ever committed, treat it as compromised: revoke and rotate it first, then remove it from history. Add secret scanning to CI and pre-commit hooks.",
+      "keywords": "process.env dotenv secret manager rotate jwt secret aws key"
+    },
+    {
+      "id": "CWE-1395",
+      "title": "Dependency on Vulnerable Third-Party Component",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/1395.html",
+      "vuln_class": "vulnerable_dependency",
+      "text": "The application relies on a third-party package version that has a publicly known vulnerability. Attackers look for known-vulnerable versions because exploitation details are often published with the advisory. The fix is usually to move to a patched release; when none exists, the vulnerable code path has to be avoided or the package replaced.",
+      "keywords": "package.json dependency version CVE GHSA advisory osv npm audit patched upgrade"
+    },
+    {
+      "id": "CWE-1104",
+      "title": "Use of Unmaintained Third Party Components",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/1104.html",
+      "vuln_class": "vulnerable_dependency",
+      "text": "Depending on third-party packages that are outdated or unmaintained means known vulnerabilities in those packages become vulnerabilities in your application, and fixes may never arrive.",
+      "keywords": "package.json dependency version outdated npm"
+    },
+    {
+      "id": "OWASP-CS-DEPS",
+      "title": "OWASP Vulnerable Dependency Management Cheat Sheet",
+      "source": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Vulnerable_Dependency_Management_Cheat_Sheet.html",
+      "vuln_class": "vulnerable_dependency",
+      "text": "Track dependencies continuously against vulnerability databases. When an advisory affects you, upgrade to the first fixed version or later and run your tests. If no fix exists, assess whether the vulnerable code path is reachable, apply a workaround or replace the package, and document the accepted risk. Commit a lockfile so builds are reproducible and audits are accurate.",
+      "keywords": "npm audit osv upgrade lockfile package-lock CVE advisory"
+    },
+    {
+      "id": "CWE-1321",
+      "title": "Improperly Controlled Modification of Object Prototype Attributes (Prototype Pollution)",
+      "source": "MITRE CWE",
+      "url": "https://cwe.mitre.org/data/definitions/1321.html",
+      "vuln_class": "vulnerable_dependency",
+      "text": "Prototype pollution lets an attacker add or change properties on Object.prototype through keys like __proto__ or constructor.prototype, affecting every object in the process. It commonly appears in deep-merge, set-by-path and argument-parsing libraries, and can lead to denial of service, logic bypass or code execution.",
+      "keywords": "__proto__ lodash merge set minimist prototype"
+    },
+    {
+      "id": "NODE-SEC-BP",
+      "title": "Node.js Security Best Practices",
+      "source": "Node.js documentation",
+      "url": "https://nodejs.org/en/learn/getting-started/security-best-practices",
+      "vuln_class": "general",
+      "text": "Node.js guidance covers threats such as denial of service through unbounded request bodies, DNS rebinding, exposure of sensitive data through logs or error messages, prototype pollution, and supply-chain attacks through malicious or compromised npm packages. Recommended practices include setting request size limits and timeouts, pinning and auditing dependencies, avoiding running as root, and not exposing stack traces to clients.",
+      "keywords": "express body limit helmet npm supply chain"
+    }
+  ]
+}

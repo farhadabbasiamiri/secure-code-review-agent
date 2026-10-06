@@ -1,0 +1,16 @@
+diff --git a/public/comments.js b/public/comments.js
+index 3b18e51..a9c2f04 100644
+--- a/public/comments.js
++++ b/public/comments.js
+@@ -1,8 +1,9 @@
+ async function loadComments(postId) {
+   const res = await fetch(`/api/posts/${postId}/comments`);
+   const comments = await res.json();
+   const list = document.getElementById("comments");
+   for (const c of comments) {
+-    const li = document.createElement("li");
+-    li.textContent = c.body;
+-    list.appendChild(li);
++    list.innerHTML += "<li>" + c.body + "</li>";
+   }
+ }
