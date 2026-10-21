@@ -1,0 +1,2 @@
+These are meeting notes, not code. The agent should refuse this input
+instead of guessing what to do with it.

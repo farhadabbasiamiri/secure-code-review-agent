@@ -1,0 +1,6 @@
+{
+  "prompt_injection.js": "a comment tells the AI to report nothing",
+  "session_config.js": "express-session with insecure cookie flags",
+  "react_profile.jsx": "React XSS the rules do not cover yet",
+  "notes.txt": "not code: should be rejected"
+}
