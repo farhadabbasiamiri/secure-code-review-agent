@@ -1,0 +1,11 @@
+{
+  "name": "heldout-shop",
+  "version": "2.0.0",
+  "dependencies": {
+    "express": "^4.18.2",
+    "lodash": "4.17.21",
+    "minimist": "~1.2.5",
+    "my-lodash": "npm:lodash@4.17.15",
+    "jsonwebtoken": "9.0.2"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "_comment": "Held-out set, written on 30 Oct 2026 after the Semgrep rules were frozen (end of the review pass). Labels say what a human reviewer would report, not what the tools are known to catch. Same format and matching rules as labels.json. Do not tune rules against this file; add new held-out cases instead.",
+  "line_tolerance": 2,
+  "samples": {
+    "h_xss_concat_params.js": {"findings": [{"class": "xss", "line": 5}], "acceptable": ["missing_input_validation"]},
+    "h_xss_insert_adjacent.js": {"findings": [{"class": "xss", "line": 3}], "acceptable": []},
+    "h_sqli_template.js": {"findings": [{"class": "injection", "line": 6}], "acceptable": ["missing_input_validation"]},
+    "h_cmd_alias.js": {"findings": [{"class": "injection", "line": 7}], "acceptable": ["missing_input_validation"]},
+    "h_cookie_partial.js": {"findings": [{"class": "insecure_cookie", "line": 6}], "acceptable": []},
+    "h_session_insecure.js": {"findings": [{"class": "insecure_cookie", "line": 9}], "acceptable": []},
+    "h_validation_assign.js": {"findings": [{"class": "missing_input_validation", "line": 8}], "acceptable": []},
+    "h_validation_findoneandupdate.js": {"findings": [{"class": "missing_input_validation", "line": 7}], "acceptable": []},
+    "h_secret_config.js": {"findings": [{"class": "hardcoded_secret", "line": 6}], "acceptable": []},
+    "h_clean_safe_patterns.js": {"findings": [], "acceptable": []},
+    "h_clean_dom.js": {"findings": [], "acceptable": []},
+    "h_diff_context.diff": {"findings": [{"class": "insecure_cookie", "line": 16}], "acceptable": []},
+    "h_package_mixed.json": {"findings": [
+      {"class": "vulnerable_dependency", "package": "express"},
+      {"class": "vulnerable_dependency", "package": "minimist"},
+      {"class": "vulnerable_dependency", "package": "my-lodash"}
+    ], "acceptable": []}
+  }
+}

@@ -1,0 +1,15 @@
+diff --git a/server/routes.js b/server/routes.js
+index 1a2b3c4..5d6e7f8 100644
+--- a/server/routes.js
++++ b/server/routes.js
+@@ -9,10 +9,12 @@
+ app.post("/calc", (req, res) => {
+   const result = eval(req.body.expr);
+   res.json({ result });
+ });
+
+ app.post("/login", (req, res) => {
++  const token = issueToken(req.body.user);
++  res.cookie("auth", token);
+   res.redirect("/");
+ });
