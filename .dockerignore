@@ -1,0 +1,11 @@
+.git
+.venv
+.env
+logs
+.pytest_cache
+.playwright-mcp
+.gradio
+**/__pycache__
+**/*.pyc
+eval/results/*.json
+*.pdf

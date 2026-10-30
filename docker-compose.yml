@@ -1,0 +1,32 @@
+# docker compose up --build                       app only; reaches an Ollama running on your computer
+# docker compose --profile ollama up --build      app + an Ollama container
+#   then once: docker compose exec ollama ollama pull qwen2.5-coder:7b
+#   and in the app's LLM settings use Server URL http://ollama:11434
+services:
+  app:
+    build: .
+    ports:
+      - "7860:7860"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # Inside a container "localhost" is the container itself; this name points at your computer.
+      SCRA_OLLAMA_URL: ${SCRA_OLLAMA_URL:-http://host.docker.internal:11434}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - logs:/app/logs
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama
+    profiles: ["ollama"]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+
+volumes:
+  logs:
+  ollama:
